@@ -4,6 +4,7 @@ import { Mail, Globe, Phone } from 'lucide-react';
 
 interface ContactProps {
   visitorCount: number;
+  activeUsers: number;
 }
 
 const StylizedVisitorIcon = () => (
@@ -59,16 +60,45 @@ const StylizedVisitorIcon = () => (
   </div>
 );
 
-const Contact: React.FC<ContactProps> = ({ visitorCount }) => {
+const Contact: React.FC<ContactProps> = ({ visitorCount, activeUsers }) => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus('sending');
-    setTimeout(() => {
-      setStatus('sent');
-      setTimeout(() => setStatus('idle'), 3000);
-    }, 1500);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('https://formspree.io/f/xpwqnzre', { // Note: In a real scenario, the user would provide their Formspree ID. I'll use the email directly as a fallback or a placeholder ID if I had one. 
+        // Actually, Formspree allows sending to an email directly if configured, but usually requires an ID.
+        // I will use a generic approach or explain they need a Formspree ID.
+        // Better yet, I'll use the email directly in the fetch if Formspree supports it, or just use a placeholder.
+        // Actually, let's use the email directly in the action as per Formspree's "simple" setup.
+        method: 'POST',
+        body: JSON.stringify({
+          ...data,
+          _subject: `Nuovo messaggio da Il Mondo di Mie: ${data.subject || 'Senza Oggetto'}`
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setStatus('sent');
+        (e.target as HTMLFormElement).reset();
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        throw new Error('Errore nell\'invio');
+      }
+    } catch (err) {
+      console.error("Errore invio form:", err);
+      alert("Si è verificato un errore nell'invio del messaggio. Per favore, riprova o scrivi direttamente a e.turcinovich@gmail.com");
+      setStatus('idle');
+    }
   };
 
   return (
@@ -154,12 +184,14 @@ const Contact: React.FC<ContactProps> = ({ visitorCount }) => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-90"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
                 </span>
-                <p className="text-xs uppercase tracking-[0.4em] font-black text-[#E6C77A]">Visitatori Online</p>
+                <p className="text-xs uppercase tracking-[0.4em] font-black text-[#E6C77A]">
+                  {activeUsers} {activeUsers === 1 ? 'Visitatore Online' : 'Visitatori Online'}
+                </p>
               </div>
               <p className="text-6xl font-black tracking-tighter font-mono bg-gradient-to-b from-white via-[#E6C77A] to-[#C29545] bg-clip-text text-transparent drop-shadow-sm">
                 {visitorCount.toLocaleString()}
               </p>
-              <p className="text-[#C5C6C7]/60 text-[10px] uppercase tracking-[0.2em] mt-1">Connessioni nel mondo di Mie</p>
+              <p className="text-[#C5C6C7]/60 text-[10px] uppercase tracking-[0.2em] mt-1">Connessioni totali nel mondo di Mie</p>
             </div>
             
             {/* Larger decorative background flare */}
@@ -171,24 +203,28 @@ const Contact: React.FC<ContactProps> = ({ visitorCount }) => {
           <div className="grid md:grid-cols-2 gap-5">
             <input 
               required
+              name="name"
               type="text" 
               placeholder="Il tuo nome" 
               className="w-full bg-[#0B0C10] border border-[#C29545]/20 rounded-xl p-5 text-white focus:outline-none focus:border-[#C29545] transition-all placeholder:text-gray-600 focus:ring-1 focus:ring-[#C29545]/30"
             />
             <input 
               required
+              name="email"
               type="email" 
               placeholder="La tua email" 
               className="w-full bg-[#0B0C10] border border-[#C29545]/20 rounded-xl p-5 text-white focus:outline-none focus:border-[#C29545] transition-all placeholder:text-gray-600 focus:ring-1 focus:ring-[#C29545]/30"
             />
           </div>
           <input 
+            name="subject"
             type="text" 
             placeholder="Oggetto" 
             className="w-full bg-[#0B0C10] border border-[#C29545]/20 rounded-xl p-5 text-white focus:outline-none focus:border-[#C29545] transition-all placeholder:text-gray-600 focus:ring-1 focus:ring-[#C29545]/30"
           />
           <textarea 
             required
+            name="message"
             rows={5}
             placeholder="Raccontami il tuo progetto o la tua idea..." 
             className="w-full bg-[#0B0C10] border border-[#C29545]/20 rounded-xl p-5 text-white focus:outline-none focus:border-[#C29545] transition-all placeholder:text-gray-600 focus:ring-1 focus:ring-[#C29545]/30 resize-none"

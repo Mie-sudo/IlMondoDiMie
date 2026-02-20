@@ -10,14 +10,48 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 const App: React.FC = () => {
-  const [visitorCount, setVisitorCount] = useState<number>(0);
+  const [visitorCount, setVisitorCount] = useState<number>(1240);
+  const [activeUsers, setActiveUsers] = useState<number>(1);
 
   useEffect(() => {
-    // Simulate a visitor counter since common public APIs are often rate-limited or down
-    const storedCount = localStorage.getItem('mie_visitor_count');
-    const newCount = storedCount ? parseInt(storedCount) + 1 : 1240;
-    setVisitorCount(newCount);
-    localStorage.setItem('mie_visitor_count', newCount.toString());
+    // Connect to WebSocket for real-time updates
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}`;
+    
+    let socket: WebSocket;
+    let reconnectTimeout: NodeJS.Timeout;
+
+    const connect = () => {
+      socket = new WebSocket(wsUrl);
+
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'VISITOR_UPDATE') {
+            setVisitorCount(data.total);
+            setActiveUsers(data.active);
+          }
+        } catch (err) {
+          console.error("WS Message error:", err);
+        }
+      };
+
+      socket.onclose = () => {
+        reconnectTimeout = setTimeout(connect, 3000);
+      };
+
+      socket.onerror = (err) => {
+        console.error("WS Error:", err);
+        socket.close();
+      };
+    };
+
+    connect();
+
+    return () => {
+      if (socket) socket.close();
+      clearTimeout(reconnectTimeout);
+    };
   }, []);
 
   return (
@@ -35,7 +69,7 @@ const App: React.FC = () => {
         
         <AIChat />
         
-        <Contact visitorCount={visitorCount} />
+        <Contact visitorCount={visitorCount} activeUsers={activeUsers} />
       </main>
       
       <Footer />
