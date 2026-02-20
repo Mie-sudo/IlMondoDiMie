@@ -1,0 +1,8 @@
+{
+  "name": "Il Mondo di Mie",
+  "description": "A sophisticated digital portfolio and AI specialist showcase for Maria Elena “Mie” Turcinovich, featuring real-time weather, RSS integration, and a custom Gemini-powered AI chat assistant.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
