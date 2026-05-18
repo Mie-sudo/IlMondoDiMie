@@ -3,12 +3,12 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="py-12 bg-[#0B0C10] border-t border-[#C29545]/20">
+    <footer className="py-12 bg-midnight border-t border-lunar/10 relative z-10">
       <div className="max-w-7xl mx-auto px-6 text-center space-y-4">
-        <p className="font-display text-lg tracking-widest text-[#C29545]">Il Mondo di Mie</p>
-        <div className="text-[#C5C6C7]/60 text-sm space-y-1">
+        <p className="font-display text-xl tracking-[0.3em] text-gold uppercase drop-shadow-[0_0_10px_rgba(200,166,110,0.5)]">Mie Noctis</p>
+        <div className="text-fog/50 text-sm space-y-1 font-sans font-light">
           <p>© {new Date().getFullYear()} Maria Elena Turcinovich | Tutti i diritti riservati</p>
-          <p>Roma, Italia | Precisione Tecnica, Cuore Creativo</p>
+          <p className="italic pt-2">Oltre l'orizzonte, dove l'immaginazione incontra la tecnica.</p>
         </div>
       </div>
     </footer>

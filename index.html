@@ -4,37 +4,138 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Il Mondo di Mie – Creativa Digitale & AI Specialist</title>
+    <title>Mie Noctis – Creativa & Storyteller</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              midnight: '#0B1020',
+              night: '#0B1020',
+              shadow: '#2A1838',
+              lunar: '#D8DEE9',
+              magic: '#C8A66E',
+              gold: '#C8A66E',
+              goldpale: '#F2E9C9',
+              fog: '#9CA3AF',
+              warmwhite: '#FFF7E6',
+            },
+            fontFamily: {
+              sans: ['Lora', 'serif'],
+              display: ['Cinzel', 'serif'],
+              subtitle: ['Cormorant Garamond', 'serif'],
+            },
+            animation: {
+              'glow': 'glow 3s ease-in-out infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'fog': 'fog 20s linear infinite',
+              'shimmer': 'shimmer 4s linear infinite',
+            },
+            keyframes: {
+              glow: {
+                '0%, 100%': { filter: 'drop-shadow(0 0 5px rgba(200, 166, 110, 0.4))' },
+                '50%': { filter: 'drop-shadow(0 0 15px rgba(200, 166, 110, 0.8))' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              fog: {
+                '0%': { transform: 'translateX(-10%)' },
+                '100%': { transform: 'translateX(10%)' },
+              },
+              shimmer: {
+                 '0%': { backgroundPosition: '-200% center' },
+                 '100%': { backgroundPosition: '200% center' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+    <script type="text/tailwindcss">
+      @layer utilities {
+        .text-glow-epic {
+          text-shadow: 0 0 15px rgba(242, 233, 201, 0.4), 0 0 30px rgba(200, 166, 110, 0.2);
+        }
+        .text-glow-hover {
+          text-shadow: 0 0 25px rgba(242, 233, 201, 0.7), 0 0 50px rgba(200, 166, 110, 0.4);
+        }
+        .text-glow-h2 {
+          text-shadow: 0 0 10px rgba(216, 222, 233, 0.2), 0 0 20px rgba(42, 24, 56, 0.4);
+        }
+        .text-shadow-cinematic {
+          text-shadow: 2px 4px 10px rgba(11, 16, 32, 0.9), 0 0 30px rgba(242, 233, 201, 0.1);
+        }
+        .animate-shimmer {
+          background-size: 200% auto;
+        }
+        .heading-subtitle {
+           @apply font-subtitle text-xl md:text-2xl text-lunar font-light italic tracking-wider;
+        }
+        .paragraph-text {
+           @apply font-sans text-warmwhite leading-relaxed text-lg tracking-wide drop-shadow-sm;
+        }
+        .btn-epic {
+           @apply px-8 py-3 rounded-none relative overflow-hidden group border border-gold/30 bg-midnight/50 hover:border-gold/80 transition-all duration-500 transform hover:-translate-y-1 block md:inline-block text-center glass-card;
+        }
+        .btn-epic-text {
+           @apply relative z-10 font-display text-goldpale tracking-[0.2em] text-sm group-hover:text-gold transition-colors duration-300 uppercase;
+        }
+      }
+      
+      @layer components {
+        .heading-h1 {
+          @apply font-display text-transparent bg-clip-text bg-gradient-to-r from-[#F2E9C9] via-[#C8A66E] to-[#D8DEE9] text-glow-epic animate-shimmer tracking-wide font-medium hover:text-glow-hover transition-all duration-700 ease-in-out cursor-default;
+        }
+        .heading-h2 {
+          @apply font-display text-transparent bg-clip-text bg-gradient-to-br from-[#D8DEE9] to-[#2A1838] text-glow-h2 tracking-wider font-medium hover:text-glow-epic transition-all duration-500 ease-in-out text-shadow-cinematic;
+        }
+        .heading-h3 {
+          @apply font-display tracking-[0.2em] uppercase font-light text-[#C8A66E]/90 drop-shadow-[0_0_8px_rgba(200,166,110,0.3)] hover:text-[#C8A66E] hover:drop-shadow-[0_0_12px_rgba(242,233,201,0.5)] transition-all duration-300;
+        }
+        .heading-epic-gold {
+          @apply font-display text-transparent bg-clip-text bg-gradient-to-r from-[#C8A66E] via-[#F2E9C9] to-[#C8A66E] animate-shimmer text-glow-epic tracking-wide transition-all duration-700 hover:text-glow-hover;
+        }
+        .heading-epic-magic {
+          @apply font-display text-transparent bg-clip-text bg-gradient-to-r from-[#D8DEE9] via-[#C8A66E] to-[#D8DEE9] animate-shimmer text-glow-epic tracking-wide transition-all duration-700 hover:text-glow-hover;
+        }
+      }
+    </script>
     <style>
       body {
-        font-family: 'Poppins', sans-serif;
-        background-color: #0B0C10;
-        color: #C5C6C7;
+        font-family: 'Lora', serif;
+        background-color: #0B1020;
+        color: #FFF7E6;
       }
       .font-display {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Cinzel', serif;
+      }
+      .font-subtitle {
+        font-family: 'Cormorant Garamond', serif;
       }
       ::-webkit-scrollbar {
         width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #0B0C10;
+        background: #050a15;
       }
       ::-webkit-scrollbar-thumb {
-        background: #C29545;
+        background: #06b6d4;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #BF7B90;
+        background: #38bdf8;
       }
-      @keyframes goldGlow {
-        0%, 100% { filter: drop-shadow(0 0 5px rgba(194,149,69,0.3)); }
-        50% { filter: drop-shadow(0 0 15px rgba(194,149,69,0.6)); }
-      }
-      .gold-glow {
-        animation: goldGlow 3s ease-in-out infinite;
+      
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
       }
     </style>
 <script type="importmap">
@@ -44,15 +145,14 @@
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
     "lucide-react": "https://esm.sh/lucide-react@^0.575.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.42.0"
+    "@google/genai": "https://esm.sh/@google/genai@^1.42.0",
+    "framer-motion": "https://esm.sh/framer-motion@^11.0.8"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
-<script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

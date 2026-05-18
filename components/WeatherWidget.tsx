@@ -148,26 +148,80 @@ const StylizedIcon: React.FC<{ condition: WeatherCondition }> = ({ condition }) 
 
 const WeatherWidget: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [locationName, setLocationName] = useState<string>("Localizzazione in corso...");
+  const [weatherData, setWeatherData] = useState<{ temp: string; desc: string; condition: WeatherCondition; isDay: boolean } | null>(null);
   
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
-  const hour = currentTime.getHours();
-  const isDay = hour >= 6 && hour < 20;
-  
-  // Logic for dynamic conditions
-  const weatherData = useMemo(() => {
-    if (isDay) {
-      if (hour < 10) return { temp: '18°C', desc: 'Alba Dorata', condition: 'sunny' as WeatherCondition };
-      if (hour < 17) return { temp: '24°C', desc: 'Soleggiato', condition: 'sunny' as WeatherCondition };
-      return { temp: '21°C', desc: 'Tramonto Sereno', condition: 'cloudy' as WeatherCondition };
-    } else {
-      return { temp: '16°C', desc: 'Notte Stellata', condition: 'clear-night' as WeatherCondition };
-    }
-  }, [hour, isDay]);
+  useEffect(() => {
+    const fetchWeather = async (lat: number, lon: number) => {
+      try {
+        // Fetch city name
+        const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=it`);
+        const geoData = await geoRes.json();
+        const city = geoData.city || geoData.locality || geoData.principalSubdivision || "La tua posizione";
+        setLocationName(city);
 
+        // Fetch weather
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const weatherJson = await weatherRes.json();
+        const current = weatherJson.current_weather;
+        
+        let condition: WeatherCondition = 'sunny';
+        let desc = 'Soleggiato';
+        
+        const isDay = current.is_day === 1;
+        const code = current.weathercode;
+        
+        if (code === 0 || code === 1) {
+          condition = isDay ? 'sunny' : 'clear-night';
+          desc = isDay ? 'Soleggiato' : 'Notte Stellata';
+        } else if (code === 2 || code === 3 || code === 45 || code === 48) {
+          condition = 'cloudy';
+          desc = 'Nuvoloso';
+        } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || (code >= 95 && code <= 99)) {
+          condition = 'rainy';
+          desc = 'Pioggia';
+        } else if (code >= 71 && code <= 86) {
+          condition = 'cloudy';
+          desc = 'Neve / Coperto';
+        }
+
+        setWeatherData({
+          temp: `${Math.round(current.temperature)}°C`,
+          desc,
+          condition,
+          isDay
+        });
+      } catch (err) {
+        console.error("Failed to fetch weather data:", err);
+        // Fallback
+        setLocationName("Roma");
+        setWeatherData({ temp: '22°C', desc: 'Soleggiato', condition: 'sunny', isDay: true });
+      }
+    };
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchWeather(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          // Fallback to Rome if permission denied or error
+          fetchWeather(41.9028, 12.4964);
+        }
+      );
+    } else {
+      // Fallback to Rome if geolocation not supported
+      fetchWeather(41.9028, 12.4964);
+    }
+  }, []);
+
+  const isDay = weatherData ? weatherData.isDay : (currentTime.getHours() >= 6 && currentTime.getHours() < 20);
   const bgGradient = isDay 
     ? 'from-[#0B0C10] via-[#1A3A5F] to-[#0B0C10]' 
     : 'from-[#0B0C10] via-[#0D1B2A] to-[#0B0C10]';
@@ -175,29 +229,38 @@ const WeatherWidget: React.FC = () => {
   return (
     <section id="meteo" className={`py-16 bg-gradient-to-b ${bgGradient} border-y border-[#C29545]/20 transition-colors duration-1000 scroll-mt-20`}>
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="font-display text-3xl mb-8 text-white">Orizzonte Roma</h2>
+        <h2 className="heading-h2 text-3xl md:text-5xl mb-8">METEO</h2>
         
-        <div className="inline-flex flex-col md:flex-row items-center gap-8 bg-[#1F2833]/40 backdrop-blur-xl border border-[#C29545]/30 p-10 rounded-3xl shadow-[0_0_50px_rgba(194,149,69,0.15)] relative overflow-hidden group">
-          {/* Decorative ambient glow */}
-          <div className={`absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] transition-colors duration-1000 ${isDay ? 'bg-[#C29545]/20' : 'bg-[#BF7B90]/10'}`}></div>
-          
-          <div className="relative z-10">
-            <StylizedIcon condition={weatherData.condition} />
-          </div>
-          
-          <div className="text-center md:text-left relative z-10">
-            <p className="text-6xl font-bold text-white tracking-tighter mb-1 drop-shadow-md">
-              {weatherData.temp}
-            </p>
-            <div className="flex flex-col">
-              <span className="text-[#C29545] uppercase tracking-[0.3em] text-sm font-bold">
-                {weatherData.desc}
-              </span>
-              <span className="text-[#C5C6C7]/40 text-xs mt-2 font-mono uppercase">
-                Aggiornato alle {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            </div>
-          </div>
+        <div className="inline-flex flex-col md:flex-row items-center gap-8 bg-[#0B1020]/80 backdrop-blur-xl border border-gold/30 p-10 rounded-none shadow-[0_0_50px_rgba(200,166,110,0.1)] relative overflow-hidden group min-h-[200px] min-w-[300px] justify-center glass-card">
+          {weatherData ? (
+            <>
+              {/* Decorative ambient glow */}
+              <div className={`absolute -top-24 -left-24 w-48 h-48 rounded-full blur-[80px] transition-colors duration-1000 ${isDay ? 'bg-gold/20' : 'bg-shadow/40'}`}></div>
+              
+              <div className="relative z-10">
+                <StylizedIcon condition={weatherData.condition} />
+              </div>
+              
+              <div className="text-center md:text-left relative z-10 flex flex-col justify-center">
+                <span className="text-goldpale/70 uppercase tracking-widest text-xs font-bold mb-2">
+                  {locationName}
+                </span>
+                <p className="font-display text-6xl text-goldpale tracking-wider mb-1 drop-shadow-[0_0_15px_rgba(242,233,201,0.5)]">
+                  {weatherData.temp}
+                </p>
+                <div className="flex flex-col">
+                  <span className="text-gold uppercase tracking-[0.3em] text-sm font-bold">
+                    {weatherData.desc}
+                  </span>
+                  <span className="text-fog/50 text-xs mt-2 font-mono uppercase">
+                    Aggiornato alle {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-gold animate-pulse font-display tracking-widest">Analisi atmosferica in corso...</div>
+          )}
         </div>
       </div>
     </section>

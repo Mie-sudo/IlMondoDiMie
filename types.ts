@@ -1,10 +1,4 @@
 
-export interface RSSItem {
-  title: string;
-  link: string;
-  pubDate?: string;
-}
-
 export interface PortfolioItem {
   title: string;
   description: string;

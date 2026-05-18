@@ -1,71 +1,39 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import BooksSection from './components/BooksSection';
+import AICreativitySection from './components/AICreativitySection';
 import WeatherWidget from './components/WeatherWidget';
 import Portfolio from './components/Portfolio';
-import RSSSection from './components/RSSSection';
 import AIChat from './components/AIChat';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import MagicCursor from './components/MagicCursor';
+
+// Firebase custom hook for real-time visitors
+import { useVisitors } from './hooks/useVisitors';
 
 const App: React.FC = () => {
-  const [visitorCount, setVisitorCount] = useState<number>(1240);
-  const [activeUsers, setActiveUsers] = useState<number>(1);
-
-  useEffect(() => {
-    // Connect to WebSocket for real-time updates
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-    
-    let socket: WebSocket;
-    let reconnectTimeout: NodeJS.Timeout;
-
-    const connect = () => {
-      socket = new WebSocket(wsUrl);
-
-      socket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.type === 'VISITOR_UPDATE') {
-            setVisitorCount(data.total);
-            setActiveUsers(data.active);
-          }
-        } catch (err) {
-          console.error("WS Message error:", err);
-        }
-      };
-
-      socket.onclose = () => {
-        reconnectTimeout = setTimeout(connect, 3000);
-      };
-
-      socket.onerror = (err) => {
-        console.error("WS Error:", err);
-        socket.close();
-      };
-    };
-
-    connect();
-
-    return () => {
-      if (socket) socket.close();
-      clearTimeout(reconnectTimeout);
-    };
-  }, []);
+  // Use custom Firebase hook with initial visitor count set to 1242
+  const { visitorCount, activeUsers } = useVisitors(1242);
 
   return (
-    <div className="min-h-screen selection:bg-[#C29545] selection:text-[#0B0C10]">
+    <div className="min-h-screen selection:bg-magic selection:text-midnight">
+      <MagicCursor />
       <Header />
       
       <main className="pt-20">
         <Hero />
         
-        <WeatherWidget />
+        <BooksSection />
+        
+        <AICreativitySection />
         
         <Portfolio />
         
-        <RSSSection />
+        {/* Keeping existing functional widgets but they might need styling tweaks in the future */}
+        <WeatherWidget />
         
         <AIChat />
         
