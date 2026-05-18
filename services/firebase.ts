@@ -1,38 +1,34 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue, onDisconnect, set, serverTimestamp, increment } from 'firebase/database';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment as firestoreIncrement } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
+import { getFirestore } from 'firebase/firestore';
 
 // ============================================================================
 // CONFIGURAZIONE FIREBASE
-// Inserire qui i dati del proprio progetto Firebase
 // ============================================================================
 const firebaseConfig = {
-  apiKey: "INSERIRE_API_KEY",
-  authDomain: "INSERIRE_AUTH_DOMAIN",
-  projectId: "INSERIRE_PROJECT_ID",
-  databaseURL: "INSERIRE_DATABASE_URL", // Essenziale per Realtime Database
-  storageBucket: "INSERIRE_STORAGE_BUCKET",
-  messagingSenderId: "INSERIRE_MESSAGING_SENDER_ID",
-  appId: "INSERIRE_APP_ID"
+  apiKey: "INSERISCI_API_KEY",
+  authDomain: "presenze-online.firebaseapp.com",
+  databaseURL: "https://presenze-online-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "presenze-online",
+  storageBucket: "presenze-online.firebasestorage.app",
+  messagingSenderId: "528831758582",
+  appId: "1:528831758582:web:951dc100118c68444eacd7",
+  measurementId: "G-DEYKGWEL16"
 };
 
-// Inizializza Firebase solo se la configurazione è stata inserita (placeholder rimosso)
-const isFirebaseConfigured = firebaseConfig.apiKey !== "INSERIRE_API_KEY" && firebaseConfig.apiKey !== "";
+// Se abbiamo un URL database corretto possiamo usarlo anche se apiKey è un placeholder
+const isFirebaseConfigured = true;
 
 let app;
 let rtdb;
 let firestore;
 
-if (isFirebaseConfigured) {
-  try {
-    app = initializeApp(firebaseConfig);
-    // Inizializza Realtime Database per la Presence (utenti online)
-    rtdb = getDatabase(app);
-    // Inizializza Firestore per salvare il totale visite in modo persistente e strutturato (opzionale se usi solo RTDB)
-    firestore = getFirestore(app);
-  } catch (error) {
-    console.error("Errore durante l'inizializzazione di Firebase:", error);
-  }
+try {
+  app = initializeApp(firebaseConfig);
+  rtdb = getDatabase(app);
+  firestore = getFirestore(app);
+} catch (error) {
+  console.error("Errore durante l'inizializzazione di Firebase:", error);
 }
 
 export { app, rtdb, firestore, isFirebaseConfigured };

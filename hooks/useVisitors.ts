@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'; // need to install uuid
 
 export function useVisitors(initialTotal: number = 1242) {
   const [visitorCount, setVisitorCount] = useState<number>(initialTotal);
-  const [activeUsers, setActiveUsers] = useState<number>(2); // Default to 2 for visuals if no firebase
+  const [activeUsers, setActiveUsers] = useState<number>(1); // Default to 1 (the current user) or 0
 
   useEffect(() => {
     if (!isFirebaseConfigured || !rtdb) {
@@ -20,9 +20,8 @@ export function useVisitors(initialTotal: number = 1242) {
     }
 
     // Riferimenti Realtime Database
-    const activeUsersRef = ref(rtdb, 'stats/activeUsers');
     const totalVisitsRef = ref(rtdb, 'stats/totalVisits');
-    const userSessionRef = ref(rtdb, `stats/sessions/${sessionId}`);
+    const userSessionRef = ref(rtdb, `presence/${sessionId}`);
     const connectedRef = ref(rtdb, '.info/connected');
 
     let isNewVisitForSession = false;
@@ -59,8 +58,8 @@ export function useVisitors(initialTotal: number = 1242) {
       }
     });
 
-    // Ascolta gli utenti attivi enumerando i figli di stats/sessions
-    const sessionsRef = ref(rtdb, 'stats/sessions');
+    // Ascolta gli utenti attivi enumerando i figli di /presence
+    const sessionsRef = ref(rtdb, 'presence');
     const sessionsUnsubscribe = onValue(sessionsRef, (snapshot) => {
       let activeCount = 0;
       if (snapshot.exists()) {

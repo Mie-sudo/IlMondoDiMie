@@ -4,7 +4,6 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import BooksSection from './components/BooksSection';
 import AICreativitySection from './components/AICreativitySection';
-import WeatherWidget from './components/WeatherWidget';
 import Portfolio from './components/Portfolio';
 import AIChat from './components/AIChat';
 import Contact from './components/Contact';
@@ -31,9 +30,6 @@ const App: React.FC = () => {
         <AICreativitySection />
         
         <Portfolio />
-        
-        {/* Keeping existing functional widgets but they might need styling tweaks in the future */}
-        <WeatherWidget />
         
         <AIChat />
         
