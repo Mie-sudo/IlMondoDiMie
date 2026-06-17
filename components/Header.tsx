@@ -28,7 +28,7 @@ const Header: React.FC = () => {
           <a href="https://www.facebook.com/profile.php?id=61589640937426&sk=about" target="_blank" rel="noopener noreferrer" className="text-fog/70 hover:text-gold transition-all duration-300 transform hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(200,166,110,0.8)]">
             <Facebook className="w-5 h-5 md:w-6 md:h-6" />
           </a>
-          <a href="https://www.instagram.com/elly.turci/" target="_blank" rel="noopener noreferrer" className="text-fog/70 hover:text-gold transition-all duration-300 transform hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(200,166,110,0.8)]">
+          <a href="https://www.instagram.com/mienoctis/" target="_blank" rel="noopener noreferrer" className="text-fog/70 hover:text-gold transition-all duration-300 transform hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(200,166,110,0.8)]">
             <Instagram className="w-5 h-5 md:w-6 md:h-6" />
           </a>
           <a href="https://www.linkedin.com/in/maria-elena-turcinovich-46092671/" target="_blank" rel="noopener noreferrer" className="text-fog/70 hover:text-gold transition-all duration-300 transform hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(200,166,110,0.8)]">
